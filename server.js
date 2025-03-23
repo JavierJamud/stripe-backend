@@ -9,6 +9,10 @@ app.use(express.json());
 app.post('/create-checkout-session', async (req, res) => {
   const { amount } = req.body;
 
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: "Monto inválido." });
+  }
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -20,14 +24,11 @@ app.post('/create-checkout-session', async (req, res) => {
             product_data: {
               name: 'Pago personalizado',
             },
-            unit_amount: parseInt(amount) * 100,
+            unit_amount: amount * 100,  // Stripe convierte esto a centavos
           },
           quantity: 1,
         },
       ],
-      payment_intent_data: {
-        capture_method: 'manual'  // 👈 Esta línea es la clave
-      },
       success_url: 'https://www.rentautocuba.com/success.html',
       cancel_url: 'https://www.rentautocuba.com/cancel.html',
     });
