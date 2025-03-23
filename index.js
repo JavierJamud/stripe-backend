@@ -25,6 +25,9 @@ app.post('/create-checkout-session', async (req, res) => {
           quantity: 1,
         },
       ],
+      payment_intent_data: {
+        capture_method: 'manual'  // 👈 Esta línea es la clave
+      },
       success_url: 'https://www.rentautocuba.com/success.html',
       cancel_url: 'https://www.rentautocuba.com/cancel.html',
     });
